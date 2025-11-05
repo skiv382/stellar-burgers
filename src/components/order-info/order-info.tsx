@@ -4,7 +4,7 @@ import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchOrderByNumber } from '../../services/slices';
+import { fetchOrderByNumber, clearCurrentOrder } from '../../services/slices';
 import { selectCurrentOrder } from '../../services/selectors';
 import { selectIngredients } from '../../services/selectors';
 
@@ -15,7 +15,10 @@ export const OrderInfo: FC = () => {
   const ingredients: TIngredient[] = useSelector(selectIngredients);
 
   useEffect(() => {
-    if (number) dispatch(fetchOrderByNumber(Number(number)));
+    if (number) {
+      dispatch(clearCurrentOrder());
+      dispatch(fetchOrderByNumber(Number(number)));
+    }
   }, [dispatch, number]);
 
   const orderInfo = useMemo(() => {

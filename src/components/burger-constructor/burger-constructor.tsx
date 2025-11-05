@@ -7,13 +7,13 @@ import {
   selectOrderModalData,
   selectOrderRequest
 } from '../../services/selectors';
+import { selectUser } from '../../services/selectors';
 import {
   closeOrderModal as closeOrderModalAction,
   placeOrder,
   fetchUserOrders,
   fetchFeeds
 } from '../../services/slices';
-import { getCookie } from '../../utils/cookie';
 import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
@@ -25,11 +25,11 @@ export const BurgerConstructor: FC = () => {
   };
   const orderRequest = useSelector(selectOrderRequest);
   const orderModalData = useSelector(selectOrderModalData);
+  const user = useSelector(selectUser);
 
   const onOrderClick = () => {
     if (!constructorItems?.bun || orderRequest) return;
-    const token = getCookie('accessToken');
-    if (!token) {
+    if (!user) {
       navigate('/login', { replace: true, state: { from: '/' } });
       return;
     }

@@ -20,6 +20,10 @@
   color: var(--text-inactive-color);
 }
 
+.link p {
+  text-decoration: none;
+}
+
 .link_active {
   color: var(--text-primary-color);
 }
@@ -28,6 +32,11 @@
   display: flex;
   justify-content: flex-end;
   flex-basis: 35%;
+  text-decoration: none;
+}
+
+.link_position_last p {
+  text-decoration: none;
 }
 
 .logo {

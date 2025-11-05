@@ -12,7 +12,8 @@ export {
   ordersReducer,
   fetchFeeds,
   fetchUserOrders,
-  fetchOrderByNumber
+  fetchOrderByNumber,
+  clearCurrentOrder
 } from './orders';
 export {
   constructorReducer,
