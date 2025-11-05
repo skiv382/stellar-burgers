@@ -1,4 +1,10 @@
-import { useSelector } from '../../services/store';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchIngredients } from '../../services/slices';
+import {
+  selectIngredientsLoading,
+  selectIngredients
+} from '../../services/selectors';
 
 import styles from './constructor-page.module.css';
 
@@ -8,8 +14,15 @@ import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
-  const isIngredientsLoading = false;
+  const dispatch = useDispatch();
+  const isIngredientsLoading = useSelector(selectIngredientsLoading);
+  const ingredients = useSelector(selectIngredients);
+
+  useEffect(() => {
+    if (!ingredients.length) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredients.length]);
 
   return (
     <>

@@ -4,7 +4,15 @@ import { TIngredient, TOrder, TOrdersData, TUser } from './types';
 const URL = process.env.BURGER_API_URL;
 
 const checkResponse = <T>(res: Response): Promise<T> =>
-  res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+  res.ok
+    ? res.json()
+    : res
+        .json()
+        .then((err) =>
+          Promise.reject(
+            err?.message || err?.error || 'Произошла ошибка при запросе'
+          )
+        );
 
 type TServerResponse<T> = {
   success: boolean;
@@ -43,16 +51,29 @@ export const fetchWithRefresh = async <T>(
     const res = await fetch(url, options);
     return await checkResponse<T>(res);
   } catch (err) {
-    if ((err as { message: string }).message === 'jwt expired') {
-      const refreshData = await refreshToken();
-      if (options.headers) {
-        (options.headers as { [key: string]: string }).authorization =
-          refreshData.accessToken;
+    const errorMessage =
+      typeof err === 'string'
+        ? err
+        : (err as { message?: string })?.message || 'Произошла ошибка';
+    if (errorMessage === 'jwt expired') {
+      try {
+        const refreshData = await refreshToken();
+        if (options.headers) {
+          (options.headers as { [key: string]: string }).authorization =
+            refreshData.accessToken;
+        }
+        const res = await fetch(url, options);
+        return await checkResponse<T>(res);
+      } catch (refreshErr) {
+        const refreshErrorMessage =
+          typeof refreshErr === 'string'
+            ? refreshErr
+            : (refreshErr as { message?: string })?.message ||
+              'Ошибка обновления токена';
+        return Promise.reject(refreshErrorMessage);
       }
-      const res = await fetch(url, options);
-      return await checkResponse<T>(res);
     } else {
-      return Promise.reject(err);
+      return Promise.reject(errorMessage);
     }
   }
 };
