@@ -1,0 +1,1 @@
+export const UNKNOWN_ACTION = 'UNKNOWN_ACTION';
