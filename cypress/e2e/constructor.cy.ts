@@ -7,8 +7,7 @@ describe('Конструктор бургера', () => {
       'getUser'
     );
     cy.visit('/');
-    cy.wait('@getIngredients');
-    cy.wait(500);
+    cy.wait('@getIngredients').its('response.statusCode').should('eq', 200);
   });
 
   describe('Добавление ингредиентов в конструктор', () => {
@@ -94,6 +93,15 @@ describe('Конструктор бургера', () => {
       cy.get('#modals').should('be.empty');
     });
 
+    it('должен закрыть модальное окно при нажатии клавиши Escape', () => {
+      cy.contains('Краторная булка N-200i').closest('a').click();
+      cy.get('#modals', { timeout: 5000 }).should('exist');
+      cy.contains('Краторная булка N-200i').should('be.visible');
+
+      cy.get('body').type('{esc}');
+      cy.get('#modals').should('be.empty');
+    });
+
     it('должен отображать правильные данные ингредиента в модальном окне', () => {
       cy.contains('Биокотлета из марсианской Магнолии').closest('a').click();
 
@@ -116,9 +124,10 @@ describe('Конструктор бургера', () => {
       cy.setCookie('accessToken', 'test-access-token');
 
       cy.visit('/');
-      cy.wait('@getIngredients');
-      cy.wait('@getUser', { timeout: 10000 });
-      cy.wait(500);
+      cy.wait('@getIngredients').its('response.statusCode').should('eq', 200);
+      cy.wait('@getUser', { timeout: 10000 })
+        .its('response.statusCode')
+        .should('eq', 200);
     });
 
     afterEach(() => {
@@ -143,7 +152,9 @@ describe('Конструктор бургера', () => {
 
       cy.contains('Оформить заказ').should('be.enabled').click();
 
-      cy.wait('@createOrder', { timeout: 10000 });
+      cy.wait('@createOrder', { timeout: 10000 })
+        .its('response.statusCode')
+        .should('eq', 200);
 
       cy.get('#modals', { timeout: 5000 }).should('exist');
       cy.get('#modals').should('not.be.empty');
@@ -166,7 +177,9 @@ describe('Конструктор бургера', () => {
 
       cy.contains('Оформить заказ').should('be.enabled').click();
 
-      cy.wait('@createOrder', { timeout: 10000 });
+      cy.wait('@createOrder', { timeout: 10000 })
+        .its('response.statusCode')
+        .should('eq', 200);
 
       cy.get('#modals', { timeout: 5000 }).should('exist');
       cy.contains('12345').should('be.visible');
@@ -191,7 +204,9 @@ describe('Конструктор бургера', () => {
 
       cy.contains('Оформить заказ').should('be.enabled').click();
 
-      cy.wait('@createOrder', { timeout: 10000 });
+      cy.wait('@createOrder', { timeout: 10000 })
+        .its('response.statusCode')
+        .should('eq', 200);
 
       cy.get('#modals', { timeout: 5000 }).should('exist');
       cy.contains('12345').should('be.visible');

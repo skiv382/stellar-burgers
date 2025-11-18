@@ -164,6 +164,13 @@ describe('constructor reducer', () => {
       expect(state.items.ingredients[0].id).toBe('id-1');
       expect(state.items.ingredients[1].id).toBe('id-3');
     });
+
+    it('не должен изменять состояние при удалении из пустого конструктора', () => {
+      const state = constructorReducer(initialState, removeIngredient('id-1'));
+
+      expect(state.items.bun).toBeNull();
+      expect(state.items.ingredients).toHaveLength(0);
+    });
   });
 
   describe('moveIngredient', () => {
@@ -207,6 +214,26 @@ describe('constructor reducer', () => {
       expect(state.items.ingredients[0].id).toBe('id-2');
       expect(state.items.ingredients[1].id).toBe('id-1');
     });
+
+    it('не должен изменять порядок при некорректных индексах', () => {
+      const stateWithIngredients = {
+        ...initialState,
+        items: {
+          bun: null,
+          ingredients: [
+            { ...mockMain, id: 'id-1' },
+            { ...mockSauce, id: 'id-2' }
+          ]
+        }
+      };
+
+      const state = constructorReducer(
+        stateWithIngredients,
+        moveIngredient({ fromIndex: 5, toIndex: -1 })
+      );
+
+      expect(state.items.ingredients[0].id).toBe('id-1');
+      expect(state.items.ingredients[1].id).toBe('id-2');
+    });
   });
 });
-
