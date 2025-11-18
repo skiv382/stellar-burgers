@@ -24,3 +24,4 @@ export {
   closeOrderModal,
   placeOrder
 } from './constructor';
+export { UNKNOWN_ACTION } from './constants';

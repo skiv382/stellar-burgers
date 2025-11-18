@@ -70,6 +70,18 @@ const constructorSlice = createSlice({
     ) {
       const { fromIndex, toIndex } = action.payload;
       const arr = state.items.ingredients;
+      const isValidIndex = (index: number) =>
+        Number.isInteger(index) && index >= 0 && index < arr.length;
+
+      if (
+        arr.length === 0 ||
+        !isValidIndex(fromIndex) ||
+        !isValidIndex(toIndex) ||
+        fromIndex === toIndex
+      ) {
+        return;
+      }
+
       const [moved] = arr.splice(fromIndex, 1);
       arr.splice(toIndex, 0, moved);
     },
